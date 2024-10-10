@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth/me")
+@RequestMapping("/api/auth")
 public class UserController {
 
-    @GetMapping
+    @GetMapping("/me")
     public String getMe(){ //GitHub ID auslesen!
         return SecurityContextHolder
                 .getContext()
@@ -19,8 +19,11 @@ public class UserController {
                 .getName();
     }
 
-    @GetMapping("/2")
+    @GetMapping("/me/2")
     public String getMe2(@AuthenticationPrincipal OAuth2User user){ //Username auslesen!
+        if (user == null){
+            return "anonymousUser";
+        }
         return user.getAttributes()
                 .get("login")
                 .toString();
