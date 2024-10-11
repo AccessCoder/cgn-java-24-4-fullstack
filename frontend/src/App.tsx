@@ -7,9 +7,15 @@ import Dashboard from "./Dashboard.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import {useEffect, useState} from "react";
 
+type User = {
+    username:string
+    id:string
+    avatarUrl:string
+    favList:string[]
+}
 function App() {
 
-    const [username, setUsername] = useState<string>("")
+    const [user, setUser] = useState<User|null>(null)
 
     useEffect(() => {
         getMe()
@@ -29,15 +35,19 @@ function App() {
 
     function getMe(){
         axios.get("/api/auth/me/2")
-            .then(r => setUsername(r.data))
+            .then(r => setUser(r.data))
     }
 
   return (
     <>
       <h1>Hallo Test!</h1>
+        <p>{user?.username}</p>
+        <p>{user?.id}</p>
+        <p>{user?.avatarUrl}</p>
+        <p>{user?.favList}</p>
         <Routes>
             <Route path={"/"} element={<LoginPage login={login} getMe={getMe}/>}/>
-            <Route element={<ProtectedRoute username={username}/> }>
+            <Route element={<ProtectedRoute username={user?.username}/> }>
                //Outlet
                 <Route path={"/dashboard"} element={<Dashboard logout={logout}/>}/>
 

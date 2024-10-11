@@ -1,7 +1,7 @@
 import {Navigate, Outlet} from "react-router-dom";
 
 type ProtectedRouteProps = {
-    username:string
+    username:string|undefined
 }
 export default function ProtectedRoute(props:Readonly<ProtectedRouteProps>){
 

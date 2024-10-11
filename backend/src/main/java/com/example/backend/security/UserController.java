@@ -1,5 +1,8 @@
 package com.example.backend.security;
 
+import com.example.backend.model.AppUser;
+import com.example.backend.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -7,9 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class UserController {
+
+    private final UserRepository repo;
 
     @GetMapping("/me")
     public String getMe(){ //GitHub ID auslesen!
@@ -20,13 +28,11 @@ public class UserController {
     }
 
     @GetMapping("/me/2")
-    public String getMe2(@AuthenticationPrincipal OAuth2User user){ //Username auslesen!
+    public AppUser getMe2(@AuthenticationPrincipal OAuth2User user){ //Username auslesen!
         if (user == null){
-            return "anonymousUser";
+            return new AppUser("NotFound","anonymousUser", null, null );
         }
-        return user.getAttributes()
-                .get("login")
-                .toString();
+        return repo.findById(user.getName()).orElseThrow();
     }
 
 }
